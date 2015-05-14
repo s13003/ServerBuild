@@ -21,7 +21,6 @@
      "nmcli connection modify enp0s8 connection.autoconnect yes"
 14. "ssh administrator@192.168.56.101"コマンドを実行し、接続を確認。
 
-(ついでなので、公開鍵認証でログインできるようにしておくといいと思いますよ。必須ではないけど。)
 
 ### インストール後の設定
 
@@ -79,7 +78,7 @@
 上記コマンドをmysqlで実行するとデータベースが作成される。
   --> grant all on データベース名.\* to ユーザ名@localhost identified by パスワード
 上記コマンドをmysqlで実行するとユーザが作成される。
-11. FLUSH
+11. mysqlで'FLUSH PRIVILEGES'を実行して更新する。
 12. wordpressデレクトリを/var/www/html/に移動させる。
 13. ブラウザで"http:/[IPアドレス]/wordpress"を開く。
 14. インストールすれば終わり！！
