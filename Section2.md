@@ -28,16 +28,17 @@
    ---> "vagrant ssh"
 
 4. ホストオンリーアダプタの設定
-    サーバーを設定したあと、接続するためのIPアドレスを設定し、そのためのNICを追     加するために'config.vm.box = "CentOS7"'の下に以下を追加
+    サーバーを設定したあと、接続するためのIPアドレスを設定し、そのためのNICを追     加するために'config.vm.box = "CentOS7"'の下に以下を追加 
    ---> 'config.vm.network "private_network", ip:"192.168.56.129"'
 
-5. Vagrantfileの反映コマンド
+5. Vagrantfileの反映コマンド 
    ---> "vagrant reload"
 
 1. yumやwgetを使用するときのproxyの設定を行う
    vimで'/etc/profile'を開く
    終わりあたりに以下を追加
 
+   ```
    MY_PROXY_URL="http://172.16.40.1:8888"
    HTTP_PROXY=$MY_PROXY_URL
    HTTPS_PROXY=$MY_PROXY_URL
@@ -46,6 +47,7 @@
    https_proxy=$MY_PROXY_URL
    ftp_proxy=$MY_PROXY_URL
    export HTTP_PROXY HTTPS_PROXY FTP_PROXY http_proxy https_proxy ftp_proxy
+   ```
 
   追加したら以下のコマンドを実行
   ---> 'source /etc/profile'
@@ -57,12 +59,14 @@
   vimで'~/wgetrc'を開く
   終わりあたりに以下を追加
 
+```
   http_proxy = http://172.16.40.1:8888
   https_proxy = http://172.16.40.1:8888
   ftp_proxy = http://172.16.40.1:8888
+```
 
 2. wgetのインストール
-   sudo yum install wget
+   ---> "sudo yum install wget"
 
 ### Nginxのインストール
 3.   Nginxの公式サイトからリポジトリ追加用のrpmをダウンロードするコマンド
@@ -82,8 +86,8 @@
 7. nginxの設定でphp-fpmが動くように変更する
    ---> "sudo vi /etc/nginx/conf.d/default.conf"
 
-   開いたファイルを以下のように編集
-
+   開いたファイルを以下のように編集 
+```
    server {
    listen       80;
    server_name  localhost;
@@ -128,11 +132,12 @@
    #    deny  all;
    #}
    }
-   
+ ```
+
    編集し終わったらwww.confをvimで開く
    ---> sudo vi /etc/php-fpm.d/www.conf
 
-   user = apache
+   user = apache   
    group = apache
 
    となっているので'apache'を'nginx'に変更する
@@ -158,8 +163,8 @@
 
 ### MariaDBでユーザ、データベース作成
 
-12. データベースにログイン
-   ---> "mysql -u root -p"
+12. データベースにログイン   
+   ---> "mysql -u root -p"   
    パスワードはなしでEnter
 
 13. データベースを作成
@@ -171,22 +176,24 @@
 ### 外部から接続するための設定
 
 15. ファイアウォール、SELinuxを無効にする
+```
    ---> "sudo systemctl disable firewalld"
    ---> "sudo systemctl stop firewalld"
    ---> "sudo setenforce 0"
+```
 
 ### Wordpressをインストール
 
-14. wgetでWordpressの最新版をダウンロード
+14. wgetでWordpressの最新版をダウンロード   
    ---> "wget https://ja.wordpress.org/latest-ja.zip"
 
-15. unzipをインストール
+15. unzipをインストール   
    ---> "sudo yum install unzip"
 
-16. ダウンロードしたzipファイルを解凍
+16. ダウンロードしたzipファイルを解凍   
    ---> "unzip latest-ja.zip"
 
-17. でてきたディレクトリを公開ディレクトリに移動する
+17. でてきたディレクトリを公開ディレクトリに移動する   
    ---> "sudo mv wordpress/ /usr/share/nginx"
 
 18. ブラウザから'http://192.168.56.129/'にアクセスし、wp-configファイルの設定をする。必要事項を入力したら送信。後は流れに身を任せてインストール。
