@@ -202,18 +202,242 @@
 
 ## 2-3 Wordpressを動かす(3)
 
-1-2や2-2では提供されているrpmファイルを使用してLAMP/Nginx + PHPの環境を構築しましたが、
-提供されていないバージョンを使用して環境を構築する必要がある時もあります。
+Apache HTTP Server2.2とPHP5.5の環境を構築してwordpressを動かすぞ！
+今回IPアドレスを192.168.56.130を使ってやっていくよ！
 
-そういう場合はソースコードをダウンロードしてきて自分でコンパイルして動作させます。
+1. vagrant、プロキシの設定をする
 
-Apache HTTP Server 2.2とPHP5.5の環境を構築し、Wordpressを動かしてください。
-(MySQL/MariaDBはrpm版を使ってもOKです)
+2. mysqlのインストール
+    リポジトリを追加
+    ```
+        sudo yum -y install http://dev.mysql.com/get/mysql-community-release-e17-5.noarch.rpm
 
-## 2-4 ベンチマークを取る
+    ```
+    リポジトリのインストール
+    ```
+        rpm -Uvh mysql-community-release-el7-5.noarch.rpm
+    ```
 
-サーバーの性能測定のためにベンチマークを取ることがあります。
-(取り方はあとで)
+    mysqlcommunityserverをインストール
+    ```
+    sudo yum -y install mysql-community-server
+    ```
+    mysqlのバージョンを確認する。
+    ```
+    mysqld --version
+    ```
+
+###データベース、ユーザーの作成
+    データベースにログインする   
+    ```
+    mysql -u root -p
+    ```
+    
+    いつもどおりデータベースを作成、権限などの設定をする。   
+    
+###Apache HTTP Serverのインストール
+3. Apache HTTP Server2.2をダウンロード   
+```
+    wget http://ftp.jaist.ac.jp/pub/apache/httpd/httpd-2.2.29.tar.gz
+```
+
+     ダウンロードしたファイルを解凍   
+```
+    tar xzf httpd-2.2.29.tar.gz
+```
+    でてきたディレクトリに移動   
+```
+    cd httpd-2.2.29
+```
+
+4. Makefileを作成   
+```
+    ./configure
+```
+
+5. ビルドする！   
+```
+    make
+```
+
+6. インストールする！！   
+```
+   sudo make install
+```
+
+7. 設定ファイルを開き、内容を書き換える   
+```
+    sudo vi /usr/local/apache2/conf/httpd.conf
+```
+
+    以下のように変更   
+```
+    #ServerName www.example.com:80
+    DirectoryIndex index.htmli
+```
+↓ ↓ ↓ ↓ ↓ 
+```
+    ServerName localhost:80
+    DirectoryIndex index.html index.php
+```
+
+    終わりあたりに以下を追加しphpファイルをPHPスクリプトとして動かすための設定をする   
+```
+<FilesMatch \.php$>
+SetHandler application/x-httpd-php
+</FilesMatch>
+```
+
+8. バージョンを確認(Server Version2.2.29(Unix)と表示されればおk)   
+```
+    /usr/local/apache2/bin/apachect1 -v
+```
+
+9. サーバーを起動する   
+```
+    sudo /usr/local/apache2/bin/apachect1 -k start
+```
+
+10. サーバーを停止する
+```
+    sudo /usr/local/apache2/bin/apachect1 -k stop
+```
+
+### libxml2ソースファイルのダウンロードとインストール
+
+## PHP5.5インストール時に必要なlibxml2をインストールする
+
+1. libxml2インストールに必要なPythonのパッケージをインストール   
+```
+    sudo yum -y install python-devel
+```
+
+2. libxml2ソールファイルをダウンロード
+```
+wget http://xmlsoft.org/sources/libxml2-2.9.2.tar.gz
+```
+
+3. ダウンロードしたファイルを解凍して移動
+```
+tar xzf libxml2-2.9.2.tar.gz
+cd libxml2-2.9.2
+```
+
+4. Makefileを作成し、ビルドとインストールをします。
+```
+./configure
+make
+sudo make install
+```
+
+### PHP5.5のインストール
+1. PHPのソースファイルをダウンロードする
+```
+    wget http://jp2.php.net/get/php-5.5.25.tar.gz/from/this/mirror
+```
+   ダウンロードしたファイルを解凍
+```
+    tar xzf mirror
+```
+   解凍後ディレクトリを移動
+```
+   cd php-5.5.25
+```
+   ./configure
+   --with-apxs2=/usr/local/apache2/bin/apxs \
+   --with-mysql \
+```
+
+   1. ビルドしてインストール
+```
+    make 
+    sudo make install
+```
+   2. バージョンを確認
+```
+   php -v
+```
+   
+### Wordpressのインストール
+
+1. Wordpress最新版をダウンロード
+```
+   wget http://ja.wordpress.org/latest-ja.zip
+```
+
+2. unzipをインストールする
+```
+   sudo yum install unzip
+```
+
+3. ダウンロードしたファイルを解凍する
+```
+   unzip latest-ja.zip
+```
+
+4. 解凍したディレクトリを公開ディレクトリに移動させる
+```
+   sudo mv wordpress/ /usr/local/apache2/htdocs/
+```
+
+5. http://192.168.56.130/wordpressにブラウザしてwordpressが開くのを確認する
+
+6. 流れに身をまかせて色々入力
+
+7. wp-config.phpファイルを手動で作成し、表示されたテキストをコピー＆ペーストする
+
+8. 2-3終了！！
+
+### 2-4 ベンチマークを取る
+
+# abコマンドのインストール
+1. Ubuntu側にabコマンドをインストールする
+```
+   sudo apt-get install apache2-utils
+```
+
+2. ベンチマーク実行
+ 　※ 同時接続数100、リクエスト数100
+```
+   ab -n 1000 -c 100 http://192.168.56.131:80/
+```
+
+### PageSpeed
+# Google ChromeにPageSpeed拡張をインストールし、ベンチマークを取る。
+
+1. chromeウェブストアにアクセスしPageSpeedをインストールする。
+
+2. http://192.168.56.130/wordpress/にアクセスする。
+
+3. [Ctrl+Shift+i]を押してPageSpeedタブをクリックする。
+
+4. [START ANALYZING]をクリックしてベンチマークを実行する
+
+# Wordpressの高速化  
+
+立ち上げたWordPressを高速化し、abとPageSpeedを使用して、改善されたか確認。
+
+1. apacheでコンテンツを圧縮するのに必要なモジュールをコンパイルする。
+
+# WP-SUPER-CACHEのインストール
+```
+wget https://downloads.wordpress.org/plugin/wp-super-cache.1.4.4.zip 
+```
+2. 落としたzipファイルを解凍する
+```
+unzip wp-super-cache.1.4.4.zip
+```
+
+3. でてきたファイルを移動させる。   
+```
+sudo mv wp-super-cache /usr/local/apache2/htdocs/wordpress/wp-content/plugins/
+```
+
+4. wordpressでプラグインを有効化させる。
+
+5.もう一度ベンチマークを実行し、スコアをはかる。
+
+6. 点数が上がってれば終了！
 
 ## 2-5 セキュリティチェック
 
