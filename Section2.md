@@ -346,7 +346,6 @@ sudo make install
    ./configure
    --with-apxs2=/usr/local/apache2/bin/apxs \
    --with-mysql \
-```
 
    1. ビルドしてインストール
 ```
