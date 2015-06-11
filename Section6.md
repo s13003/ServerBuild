@@ -52,15 +52,34 @@ ssh -i s13003.pem ec2-user@52.69.79.49
 ```
 ## 6-1	AWS EC2 + Ansible
 
-Amazon Elastic Computing Cloud(EC2)を使用してWordpressが動作するサーバーを作ります。
+1. hostsファイルの作成(以下を参照)   
+[hosts](Section6/hosts)   
+2. ansibleファイルを作成(以下を参照)   
+[playbook](Section6/playbook.yml)   
+3. ansibleを実行
+```
+ansible-playbook -i hosts -u [インベントリファイル] playbook.yml --private-key [pemファイル]   
+```
+4. ブラウザで自分のパブリックIPに接続   
 
-3-1を終了している場合、Ansibleで構築できるようになっているのでAnsibleを使って構築する。
-終わってない場合は手動でがんばってね。
+5. いつもどおりにwordpressをインストール
 
 ### AMI(Amazon Machine Image)を作る
 
-環境の構築が終わったら、AMIを作成します。AMIを作成後、同じマシンを2つ起動して、コピーができていることを確認してください。
+1. EC2→ インスタンス→ 自分のインスタンスを右クリック→ イメージの作成→ 名前と、説明を書いて作成   
 
+2. IMGが無事作成されていればおｋ！！   
+
+3. インスタンスの作成→ マイAMI→ 自分のAMIを選択→ そのまま作成
+
+4. 作成したインスタンスにssh接続し、mysqlを動かす
+```
+sudo service mysqld start
+```
+
+5. ブラウザでパブリックIPに接続(さっきとは違うIPなので注意)
+
+6. wordpressに接続できれば完了！
 ## 6-2 AWS EC2(AMIMOTO)
 
 6-1では自力(?)で環境構築を行ない、AMIを作成したが、別の人が作ったAMIを使用してサーバーを起動することもできる。
