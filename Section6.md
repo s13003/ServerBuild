@@ -54,7 +54,7 @@ ssh -i s13003.pem ec2-user@52.69.79.49
 
 1. hostsファイルの作成(以下を参照)   
 [hosts](Section6/hosts)   
-2. ansibleファイルを作成(以下を参照)   
+2. playbookを作成(以下を参照)   
 [playbook](Section6/playbook.yml)   
 3. ansibleを実行
 ```
@@ -82,9 +82,21 @@ sudo service mysqld start
 6. wordpressに接続できれば完了！
 ## 6-2 AWS EC2(AMIMOTO)
 
-6-1では自力(?)で環境構築を行ない、AMIを作成したが、別の人が作ったAMIを使用してサーバーを起動することもできる。
+1. インスタンス作成→ 左に[AWS marketplace]とあるのでクリック   
 
-AMIMOTOのWordpressを起動してWordpressが見れることを確認する。
+2. 製品の検索欄に[amimoto]と入力して検索   
+
+3. WordPress powered by AMIMOTO (HHVM)を選択   
+
+4. tc2.microを選択して作成   
+
+5. ssh接続できるか確認する   
+
+6. ブラウザでパブリックIPに接続する   
+
+7. インスタンスIDをいれる
+
+8. インストールしたら終了！
 
 ## 6-3 Route53
 
