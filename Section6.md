@@ -100,17 +100,21 @@ sudo service mysqld start
 
 ## 6-3 Route53
 
-Route53はAWSが提供するDNSサービス。
-
-5-1で作ったDNSの情報をRoute53に突っ込んでみよう。
+AWSサービス ＞ Route53 ＞ Create Hosted Zoneをクリック ＞ Dmain nameとcommentを入力してcreateクリック ＞ Import Zone Fileをクリック ＞ Section5で作ったzoneファイルをまるまるコピーしてimportでおｋ！ > Create Record Setをクリック ＞ valueの欄に適当にIPを入力 ＞ 変更されてればおｋ！！
 
 ## 6-4 S3
 
-S3はSimple Storage Service。その名の通り、ファイルを保存し、(状況によっては)公開するサービス。
+1. 適当にhtmlファイルを作る
 
-てきとーにWebサイトを作り、それをS3にアップロードし、公開してみよう。
+2. バケットを作成する
 
-S3にアップロードする際にはAWSコマンドラインインターフェイスを使ってね。
+3. コマンドでファイルをアップロード
+以下のコマンドを実行
+```
+aws s3 cp ファイル名 s3://[バケット名]
+```
+
+4. アップロードされてればおｋ！！
 
 ## 6-5 CloudFront
 
