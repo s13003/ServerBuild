@@ -9,9 +9,26 @@
 
 ## 6-0 AWSコマンドラインインターフェイスのインストール
 
+#下準備
+以下のコマンドを実行
+```
+sudo -s
+export EDITOR=vi
+visudo
+```
+Default env_resetをコメントアウト
+開いたファイルに以下を追加
+```
+Defaults        env_keep="no_proxy NO_PROXY"
+Defaults        env_keep+="http_proxy https_proxy ftp_proxy"
+Defaults        env_keep+="HTPP_PROXY HTTPS_PROXY FTP_PROXY"
+```
+
+適用させるために端末を再起動する
+
 1. 以下のコマンドを実行
 ```
-sudo apt-get install awscli
+sudo pip install awscli
 ```
 
 awsコマンドが使えることを確認する
@@ -19,7 +36,6 @@ awsコマンドが使えることを確認する
 ブラウザで'https://it-college.signin.aws.amazon.com/console'に接続する
 
 2. アカウントを取得する
-
 
 ## インスタンスの作成
 1. AWSのサービス→ EC2→ インスタンス→ インスタンスの作成をクリックする
@@ -52,13 +68,17 @@ ssh -i s13003.pem ec2-user@52.69.79.49
 ```
 ## 6-1	AWS EC2 + Ansible
 
-1. hostsファイルの作成(以下を参照)   
+1. hostsファイルの作成(以下を参照)  
+
+2. インスタンスを作成する
+
+3. インベントリファイルを作成する(IPは作ったインスタンスのパブリックIP)
 [hosts](Section6/hosts)   
 2. playbookを作成(以下を参照)   
 [playbook](Section6/playbook.yml)   
-3. ansibleを実行
+3. playbookを実行
 ```
-ansible-playbook -i hosts -u [インベントリファイル] playbook.yml --private-key [pemファイル]   
+ansible-playbook -i [インベントリファイル] -u ec2 playbook.yml --private-key [pemファイル]   
 ```
 4. ブラウザで自分のパブリックIPに接続   
 
