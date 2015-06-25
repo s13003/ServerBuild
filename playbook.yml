@@ -25,7 +25,7 @@
       service: name={{item}} state=started enabled=yes
       with_items:
         - nginx
-        - mariadb
+        - mysql
         - php-fpm
 
     - name: root password

@@ -2,37 +2,55 @@
 
 ## 2-1 Vagrantを使用したCentOS7環境の起動
 1. 事前に取得したboxファイルを登録
-  ---> "vagrant box add CentOS7 取得したファイルのパス --force"
+```
+vagrant box add CentOS7 取得したファイルのパス --force
+```
 
 2. Vagrantの初期設定
    作業用ディレクトリの作成
-  ---> "mkdir -p ~/ServerBuild/Vagrant_work"
+```
+mkdir -p ~/ServerBuild/Vagrant_work
+```
    作成したディレクトリ内で次のコマンドを実行
-  ---> "vagrant init"
+```
+vagrant init
+```
    'Vagrantfile'が作成されてるのでvimで開き、以下に書き直す
    'confing.vm.box = "base"'  --->  'config.vm.box = "CentOS7"'
 
    仮想マシンの起動コマンド
-   ---> "vagrant up"
+```
+vagrant up
+```
 
    仮想マシンの停止コマンド
-   ---> "vagrant halt"
+```
+vagrant halt
+```
 
    仮想マシンの一時停止
-   ---> "vagrant suspend"
+```
+vagrant suspend
+```
 
    仮想マシンの破棄
-   ---> "bagrant destroy"
+```
+bagrant destroy
+```
 
    仮想マシンへ接続
-   ---> "vagrant ssh"
+```
+vagrant ssh
+```
 
 4. ホストオンリーアダプタの設定
     サーバーを設定したあと、接続するためのIPアドレスを設定し、そのためのNICを追     加するために'config.vm.box = "CentOS7"'の下に以下を追加 
-   ---> 'config.vm.network "private_network", ip:"192.168.56.129"'
+   ---> 'config.vm.network "private_network", ip:"192.168.56.129"'   
 
 5. Vagrantfileの反映コマンド 
-   ---> "vagrant reload"
+```
+vagrant reload
+```
 
 1. yumやwgetを使用するときのproxyの設定を行う
    vimで'/etc/profile'を開く
@@ -50,11 +68,15 @@
    ```
 
   追加したら以下のコマンドを実行
-  ---> 'source /etc/profile'
+```
+source /etc/profile
+```
 
   vimで'/etc/yum.conf'を開く
   終わりあたりに以下を追加
-  ---> 'proxy=http://172.16.40.1:8888'
+```
+proxy=http://172.16.40.1:8888
+```
 
   vimで'~/wgetrc'を開く
   終わりあたりに以下を追加
@@ -66,25 +88,37 @@
 ```
 
 2. wgetのインストール
-   ---> "sudo yum install wget"
+```
+sudo yum install wget
+```
 
 ### Nginxのインストール
 3.   Nginxの公式サイトからリポジトリ追加用のrpmをダウンロードするコマンド
-   ---> "wget http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.e17.ngx.noarch.rpm
+```
+wget http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.e17.ngx.noarch.rpm
+```
 
 4. Nginxをyumでインストール
-   ---> "sudo yum install nginx"
+```
+sudo yum install nginx
+```
 
 5. Nginxを有効にして起動
-   ---> "sudo systemctl enable nginx.service"
-   ---> "sudo systemctl start nginx.service"
+```
+sudo systemctl enable nginx.service
+sudo systemctl start nginx.service
+```
 
 ### php-fpmをインストール
 6. yumでphp-fpmをインストール
-   ---> "sudo yum install php-fpm php-mbstring php-mysql"
+```
+sudo yum install php-fpm php-mbstring php-mysql
+```
 
 7. nginxの設定でphp-fpmが動くように変更する
-   ---> "sudo vi /etc/nginx/conf.d/default.conf"
+```
+sudo vi /etc/nginx/conf.d/default.conf
+```
 
    開いたファイルを以下のように編集 
 ```
@@ -135,66 +169,92 @@
  ```
 
    編集し終わったらwww.confをvimで開く
-   ---> sudo vi /etc/php-fpm.d/www.conf
-
+```
+sudo vi /etc/php-fpm.d/www.conf
+```
+```
    user = apache   
    group = apache
-
+```
    となっているので'apache'を'nginx'に変更する
    
 8. php-fpmを有効にして起動
-   ---> "sudo systemctl enable php-fpm"
-   ---> "sudo systemctl start php-fpm"
+```
+sudo systemctl enable php-fpm
+sudo systemctl start php-fpm
+```
 
 ### MariaDBをインストール
 9. yumでmariaDBをインストールする
-   ---> "sudo yum install mariadb mariadb-server"
+```
+sudo yum install mariadb mariadb-server
+```
    文字コードの設定
    'mysqld'の終わりあたりに以下を追加
-   ---> "character-set-server=utf8"
+```
+character-set-server=utf8
+```
 
 10. MariaDBを有効にして起動する。
-   ---> "sudo systemctl enable mariadb.service"
-   ---> "sudo systemctl start mariadb.service"
+```
+sudo systemctl enable mariadb.service
+sudo systemctl start mariadb.service
+```
 
 11. MariaDBの設定を行う
-   ---> "mysql_secure_installation"
+```
+mysql_secure_installation
+```
    対話形式で色々きかれるが流れに任せる
 
 ### MariaDBでユーザ、データベース作成
 
 12. データベースにログイン   
-   ---> "mysql -u root -p"   
-   パスワードはなしでEnter
+```
+mysql -u root -p
+```
+パスワードはなしでEnter
 
 13. データベースを作成
-   ---> "create database wordpress_db"
+```
+create database wordpress_db
+```
 
 14. ユーザを作成して権限を編集
-   ---> "grant oll on 'データベース名'.\* to ユーザー名@localhost identified by 'パスワード';"
+```
+grant oll on 'データベース名'.\* to ユーザー名@localhost identified by 'パスワード';
+```
 
 ### 外部から接続するための設定
 
 15. ファイアウォール、SELinuxを無効にする
 ```
-   ---> "sudo systemctl disable firewalld"
-   ---> "sudo systemctl stop firewalld"
-   ---> "sudo setenforce 0"
+sudo systemctl disable firewalld
+sudo systemctl stop firewalld
+sudo setenforce 0
 ```
 
 ### Wordpressをインストール
 
 14. wgetでWordpressの最新版をダウンロード   
-   ---> "wget https://ja.wordpress.org/latest-ja.zip"
+```
+wget https://ja.wordpress.org/latest-ja.zip
+```
 
 15. unzipをインストール   
-   ---> "sudo yum install unzip"
+```
+sudo yum install unzip
+```
 
 16. ダウンロードしたzipファイルを解凍   
-   ---> "unzip latest-ja.zip"
+```
+unzip latest-ja.zip
+```
 
 17. でてきたディレクトリを公開ディレクトリに移動する   
-   ---> "sudo mv wordpress/ /usr/share/nginx"
+```
+sudo mv wordpress/ /usr/share/nginx
+```
 
 18. ブラウザから'http://192.168.56.129/'にアクセスし、wp-configファイルの設定をする。必要事項を入力したら送信。後は流れに身を任せてインストール。
 

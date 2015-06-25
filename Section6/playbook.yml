@@ -27,6 +27,7 @@
       with_items:
         - nginx
         - php-fpm
+        - mysqld
 
     - name: Started MySQL
       action: service name=mysqld state=started
